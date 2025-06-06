@@ -1,0 +1,292 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: create-feed-configurations-table
+      author: robin
+      changes:
+        - createTable:
+            tableName: FEED_CONFIGURATIONS
+            columns:
+              - column:
+                  name: ID
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: FEED_ID
+                  type: VARCHAR(255)
+              - column:
+                  name: URL
+                  type: VARCHAR(255)
+              - column:
+                  name: CREATED_DATE
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: SCHEDULE
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: create-scheduled-jobs-table
+      author: robin
+      changes:
+        - createTable:
+            tableName: SCHEDULED_JOBS
+            columns:
+              - column:
+                  name: ID
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: FEED_ID
+                  type: VARCHAR(255)
+              - column:
+                  name: NEXT_SCHEDULED_RUN
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: LAST_SCHEDULED_RUN
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: LAST_SCHEDULED_RUN_RESULT
+                  type: VARCHAR(255)
+              - column:
+                  name: CREATED_DATE
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: SCHEDULE
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: create-feeds-table
+      author: robin
+      changes:
+        - createTable:
+            tableName: FEEDS
+            columns:
+              - column:
+                  name: ID
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: FEED_ID
+                  type: VARCHAR(255)
+              - column:
+                  name: URL
+                  type: VARCHAR(255)
+              - column:
+                  name: CATEGORIES
+                  type: VARCHAR(255) ARRAY
+              - column:
+                  name: DESCRIPTION
+                  type: TEXT
+              - column:
+                  name: FEED_TYPE
+                  type: VARCHAR(255)
+              - column:
+                  name: PUBLISHED_DATE
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: TITLE
+                  type: VARCHAR(255)
+              - column:
+                  name: URI
+                  type: VARCHAR(255)
+ 
+  - changeSet:
+      id: create-index-on-feeds-feedid
+      author: robin
+      changes:
+        - createIndex:
+            tableName: FEEDS
+            indexName: idx_feeds_feed_id
+            columns:
+              - column:
+                  name: FEED_ID
+
+  - changeSet:
+      id: create-feeds-authors-table
+      author: robin
+      changes:
+        - createTable:
+            tableName: FEED_AUTHORS
+            columns:
+              - column:
+                  name: FEEDS
+                  type: INT
+              - column:
+                  name: NAME
+                  type: VARCHAR(255)
+              - column:
+                  name: URI
+                  type: VARCHAR(255)
+              - column:
+                  name: EMAIL
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: create-feeds-links-table
+      author: robin
+      changes:
+        - createTable:
+            tableName: FEED_LINKS
+            columns:
+              - column:
+                  name: FEEDS
+                  type: INT
+              - column:
+                  name: HREF
+                  type: VARCHAR(255)
+              - column:
+                  name: REL
+                  type: VARCHAR(255)
+              - column:
+                  name: TYPE
+                  type: VARCHAR(255)
+              - column:
+                  name: TITLE
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: create-feeditems-table
+      author: robin
+      changes:
+        - createTable:
+            tableName: FEED_ITEMS
+            columns:
+              - column:
+                  name: ID
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: FEED_ID
+                  type: VARCHAR(255)
+              - column:
+                  name: CATEGORIES
+                  type: VARCHAR(255) ARRAY
+              - column:
+                  name: DESCRIPTION
+                  type: TEXT
+              - column:
+                  name: PUBLISHED_DATE
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: TITLE
+                  type: VARCHAR(255)
+              - column:
+                  name: URI
+                  type: VARCHAR(255)
+              - column:
+                  name: UPDATED_DATE
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: create-index-on-feeditems-feedid
+      author: robin
+      changes:
+        - createIndex:
+            tableName: FEED_ITEMS
+            indexName: idx_feeditems_feed_id
+            columns:
+              - column:
+                  name: FEED_ID
+
+  - changeSet:
+      id: create-feed-items-authors-table
+      author: robin
+      changes:
+        - createTable:
+            tableName: FEED_ITEM_AUTHORS
+            columns:
+              - column:
+                  name: FEED_ITEMS
+                  type: INT
+              - column:
+                  name: NAME
+                  type: VARCHAR(255)
+              - column:
+                  name: URI
+                  type: VARCHAR(255)
+              - column:
+                  name: EMAIL
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: create-feed-items-links-table
+      author: robin
+      changes:
+        - createTable:
+            tableName: FEED_ITEM_LINKS
+            columns:
+              - column:
+                  name: FEED_ITEMS
+                  type: INT
+              - column:
+                  name: HREF
+                  type: VARCHAR(255)
+              - column:
+                  name: REL
+                  type: VARCHAR(255)
+              - column:
+                  name: TYPE
+                  type: VARCHAR(255)
+              - column:
+                  name: TITLE
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: create-feed-items-contents-table
+      author: robin
+      changes:
+        - createTable:
+            tableName: FEED_ITEM_CONTENTS
+            columns:
+              - column:
+                  name: FEED_ITEMS
+                  type: INT
+              - column:
+                  name: TYPE
+                  type: VARCHAR(255)
+              - column:
+                  name: VALUE
+                  type: TEXT
+
+  - changeSet:
+      id: create-subscribers-table
+      author: robin
+      changes:
+        - createTable:
+            tableName: SUBSCRIBERS
+            columns:
+               - column:
+                  name: ID
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+               - column:
+                  name: SUBSCRIBER_ID
+                  type: VARCHAR(255)
+               - column:
+                  name: CREATED_DATE
+                  type: TIMESTAMP WITH TIME ZONE
+
+  - changeSet:
+      id: create-feed-subscriptions-table
+      author: robin
+      changes:
+        - createTable:
+            tableName: FEED_SUBSCRIPTIONS
+            columns:
+              - column:
+                  name: SUBSCRIBERS
+                  type: INT
+              - column:
+                  name: FEED_ID
+                  type: VARCHAR(255)
+  
