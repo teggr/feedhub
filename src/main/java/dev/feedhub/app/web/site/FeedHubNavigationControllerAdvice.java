@@ -25,6 +25,9 @@ public class FeedHubNavigationControllerAdvice {
     String feedSubscriptionsAdminUrl =  fromMethodName(FeedSubscriptionsAdminController.class, "getSubscribers", null, null).build().toUriString();
     model.addAttribute("feedSubscriptionsAdminUrl", feedSubscriptionsAdminUrl);
 
+    String logoutUrl = "/logout";
+    model.addAttribute("logoutUrl", logoutUrl);
+    
   }
 
 }
