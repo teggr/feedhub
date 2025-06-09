@@ -17,8 +17,7 @@ public class WebConfiguration {
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
     return (web) -> web.ignoring()
-        // Spring Security should completely ignore URLs starting with /resources/
-        ;//.requestMatchers("/resources/**");
+      ; //.requestMatchers("/resources/**");
   }
   
   @Bean
@@ -34,11 +33,16 @@ public class WebConfiguration {
 
     });
 
+    http.formLogin(form -> {
+      form.loginPage("/login").permitAll();
+    });
+
     http.formLogin(withDefaults());
     http.httpBasic(withDefaults());
 
-    http.logout((logout) -> {
-      logout.logoutSuccessUrl("/?loggedOut=true");
+    http.logout(logout -> {
+      logout.logoutUrl("/logout").permitAll();
+      logout.logoutSuccessUrl("/?logout=true");
     });
 
     return http.build();

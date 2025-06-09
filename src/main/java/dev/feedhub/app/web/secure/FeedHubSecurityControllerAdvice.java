@@ -1,4 +1,4 @@
-package dev.feedhub.app.web.site;
+package dev.feedhub.app.web.secure;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
