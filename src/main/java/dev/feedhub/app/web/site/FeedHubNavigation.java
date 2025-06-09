@@ -20,6 +20,7 @@ public class FeedHubNavigation {
     // get urls from the model
     String homeUrl = (String) model.get("homeUrl");
     String searchUrl = (String) model.get("searchUrl");
+    String feedsUrl = (String) model.get("feedsUrl");
 
     // admin urls
     String feedsAdminUrl = (String) model.get("feedsAdminUrl");
@@ -82,7 +83,9 @@ public class FeedHubNavigation {
 
                             ul().withClasses(dropdown_menu, dropdown_menu_end).with(
 
-                                li().with(a().withClasses(dropdown_item).withHref(homeUrl).withText("Feeds")),
+                                li().with(a().withClasses(dropdown_item).withHref(homeUrl).withText("Home")),
+
+                                li().with(a().withClasses(dropdown_item).withHref(feedsUrl).withText("Feeds")),
 
                                 TagCreator.iff( user != null && user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(s -> s.equals("ROLE_ADMIN")), 
                                                   li().with(a().withClasses(dropdown_item).withHref(feedSubscriptionsAdminUrl).withText("Subscriptions")) ),

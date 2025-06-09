@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import ch.qos.logback.core.model.Model;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
   @GetMapping
-  public String getHome(@AuthenticationPrincipal User user) {
+  public String getHome(@AuthenticationPrincipal User user, Model model) {
     log.info("{}", user);
     return "anonymousHomeView";
   }

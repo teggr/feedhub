@@ -42,13 +42,13 @@ public class FeedsController {
       }
     });
 
-    Subscriber firstSubscriber = feedSubscriberRepository.findAll().getFirst();
-    model.addAttribute("subscribeToFeedUrlBuilder", new SubscribeToFeedUrlBuilder() {
-      @Override
-      public String build(FeedId feedId) {
-        return fromMethodName(SubscribeToFeedController.class, "postSubscribeToFeed", firstSubscriber.subscriberId(), feedId.id()).build().toUriString();
-      }
-    });
+    // Subscriber firstSubscriber = feedSubscriberRepository.findAll().getFirst();
+    // model.addAttribute("subscribeToFeedUrlBuilder", new SubscribeToFeedUrlBuilder() {
+    //   @Override
+    //   public String build(FeedId feedId) {
+    //     return fromMethodName(SubscribeToFeedController.class, "postSubscribeToFeed", firstSubscriber.subscriberId(), feedId.id()).build().toUriString();
+    //   }
+    // });
 
     model.addAttribute("feeds", feeds.getFeeds(pageable));
 

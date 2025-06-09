@@ -25,7 +25,7 @@ public class WebConfiguration {
 
     http.authorizeHttpRequests((authorize) -> {
 
-      authorize.requestMatchers("/").permitAll();
+      authorize.requestMatchers("/", "/error", "/feeds/**").permitAll();
 
       authorize.requestMatchers("/admin/**").hasAnyRole("ADMIN");
 
