@@ -5,10 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.ListPagingAndSortingRepository;
 
-public interface FeedSubscriberRepository extends ListCrudRepository<FeedSubscriber, Long>, ListPagingAndSortingRepository<FeedSubscriber, Long> {
+public interface FeedSubscriberRepository extends ListCrudRepository<Subscriber, Long>, ListPagingAndSortingRepository<Subscriber, Long> {
 
-    FeedSubscriber findBySubscriberId(String subscriberId);
+    Subscriber findBySubscriberId(String subscriberId);
 
     Page<FeedSubscription> findFeedSubscriptionBySubscriberId(String subscriberId,  Pageable pageable);
+
+    boolean existsByUsername(String username);
 
 }

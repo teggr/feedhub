@@ -2,7 +2,7 @@ package dev.feedhub.app.web.admin.subscriptions.components;
 
 import org.springframework.data.domain.Page;
 
-import dev.feedhub.app.subscriptions.FeedSubscriber;
+import dev.feedhub.app.subscriptions.Subscriber;
 import j2html.tags.DomContent;
 import j2html.tags.specialized.TrTag;
 
@@ -15,7 +15,7 @@ import static dev.rebelcraft.j2html.bootstrap.Bootstrap.table;
 
 public class FeedSubscriptionsAdminList {
 
-  public static DomContent feedSubscriptions(Page<FeedSubscriber> feedSubscribers) {
+  public static DomContent feedSubscriptions(Page<Subscriber> feedSubscribers) {
 
     return div().withId("feedSubscribers").withClasses("mx-2").with(
 
@@ -51,7 +51,7 @@ public class FeedSubscriptionsAdminList {
     );
   }
 
-  private static TrTag feedSubscriberRow(FeedSubscriber feedSubscriber) {
+  private static TrTag feedSubscriberRow(Subscriber feedSubscriber) {
     return tr().with(
 
         td().with(text(feedSubscriber.subscriberId())), 

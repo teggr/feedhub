@@ -270,6 +270,9 @@ databaseChangeLog:
                   constraints:
                     primaryKey: true
                - column:
+                  name: USERNAME
+                  type: VARCHAR(255)
+               - column:
                   name: SUBSCRIBER_ID
                   type: VARCHAR(255)
                - column:

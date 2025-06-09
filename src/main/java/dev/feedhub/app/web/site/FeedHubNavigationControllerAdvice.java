@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import dev.feedhub.app.web.admin.feeds.FeedsAdminController;
 import dev.feedhub.app.web.admin.subscriptions.FeedSubscriptionsAdminController;
-import dev.feedhub.app.web.feeds.FeedsController;
 import dev.feedhub.app.web.home.HomeController;
 
 import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.*;

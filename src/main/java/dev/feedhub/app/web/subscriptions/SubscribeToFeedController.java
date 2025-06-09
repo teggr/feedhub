@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import dev.feedhub.app.feeds.FeedId;
-import dev.feedhub.app.subscriptions.FeedSubscriptions;
+import dev.feedhub.app.subscriptions.Subscriptions;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -14,12 +14,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SubscribeToFeedController {
 
-    private final FeedSubscriptions feedSubscriptions;
+    private final Subscriptions subscriptions;
 
     @PostMapping
     public String postSubscribeToFeed( @RequestParam("subscriberId") String subscriberId, @RequestParam("feedId") String feedIdValue ) {
         
-        feedSubscriptions.subscribeToFeed( subscriberId, new FeedId(feedIdValue));
+        subscriptions.subscribeToFeed( subscriberId, new FeedId(feedIdValue));
 
         return "redirect:/subscriptions";
         

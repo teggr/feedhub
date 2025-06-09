@@ -10,7 +10,7 @@ import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractView;
 
-import dev.feedhub.app.subscriptions.FeedSubscriber;
+import dev.feedhub.app.subscriptions.Subscriber;
 import dev.feedhub.app.web.admin.subscriptions.components.FeedSubscriptionsAdminActionBar;
 import dev.feedhub.app.web.admin.subscriptions.components.FeedSubscriptionsAdminList;
 import dev.feedhub.app.web.site.FeedHubNavigation;
@@ -39,7 +39,7 @@ public class FeedSubscriptionsAdminView extends AbstractView {
       @NonNull HttpServletResponse response) throws Exception {
 
     // get from the model
-    Page<FeedSubscriber> feedSubscribers = (Page<FeedSubscriber>) model.get("feedSubscribers");
+    Page<Subscriber> feedSubscribers = (Page<Subscriber>) model.get("feedSubscribers");
     
     String refreshUrl = (String) model.get("refreshUrl");
     String addSubscriberUrl = (String) model.get("addSubscriberUrl");

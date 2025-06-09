@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import dev.feedhub.app.feeds.FeedId;
 import dev.feedhub.app.feeds.Feeds;
-import dev.feedhub.app.subscriptions.FeedSubscriber;
+import dev.feedhub.app.subscriptions.Subscriber;
 import dev.feedhub.app.subscriptions.FeedSubscriberRepository;
 import dev.feedhub.app.web.admin.feeds.FeedsAdminController;
 import dev.feedhub.app.web.subscriptions.SubscribeToFeedController;
@@ -42,7 +42,7 @@ public class FeedsController {
       }
     });
 
-    FeedSubscriber firstSubscriber = feedSubscriberRepository.findAll().getFirst();
+    Subscriber firstSubscriber = feedSubscriberRepository.findAll().getFirst();
     model.addAttribute("subscribeToFeedUrlBuilder", new SubscribeToFeedUrlBuilder() {
       @Override
       public String build(FeedId feedId) {
@@ -64,7 +64,7 @@ public class FeedsController {
     String feedsUrl = fromMethodName(FeedsController.class, "getFeeds", null, null).build().toUriString();
     model.addAttribute("feedsUrl", feedsUrl);
 
-    FeedSubscriber firstSubscriber = feedSubscriberRepository.findAll().getFirst();
+    Subscriber firstSubscriber = feedSubscriberRepository.findAll().getFirst();
     model.addAttribute("subscribeToFeedUrlBuilder", new SubscribeToFeedUrlBuilder() {
       @Override
       public String build(FeedId feedId) {

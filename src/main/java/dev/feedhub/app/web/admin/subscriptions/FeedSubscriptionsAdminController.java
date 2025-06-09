@@ -1,6 +1,7 @@
 package dev.feedhub.app.web.admin.subscriptions;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.*;
 
-import dev.feedhub.app.subscriptions.FeedSubscriptions;
+import dev.feedhub.app.subscriptions.Subscriptions;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FeedSubscriptionsAdminController {
 
-    private final FeedSubscriptions feedSubscriptions;
+    private final Subscriptions subscriptions;
 
     @GetMapping
     public String getSubscribers(Pageable pageable, Model model) {
@@ -29,16 +30,17 @@ public class FeedSubscriptionsAdminController {
         String addSubscriberUrl = fromMethodName(FeedSubscriptionsAdminController.class, "postAddSubscriber").build().toUriString();
         model.addAttribute("addSubscriberUrl", addSubscriberUrl);
         
-        model.addAttribute("feedSubscribers", feedSubscriptions.getSubscribers(pageable));
+        model.addAttribute("feedSubscribers", subscriptions.getSubscribers(pageable));
 
         return "feedSubscriptionsAdminView";
 
     }
 
     @PostMapping("/add-subscriber")
-    public String postAddSubscriber() {
+    public String postAddSubscriber(  ) {
         
-        feedSubscriptions.createSubscriber();
+        // TODO: specify the user
+        subscriptions.createSubscriber( "user" );
         
         return "redirect:/admin/subscriptions";
 

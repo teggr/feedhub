@@ -2,18 +2,14 @@ package dev.feedhub.app.web.home;
 
 import java.util.Map;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractView;
 
-import dev.feedhub.app.subscriptions.FeedSubscription;
 import dev.feedhub.app.web.site.FeedHubNavigation;
 import dev.feedhub.app.web.site.FeedHubSiteLayout;
-import dev.feedhub.app.web.subscriptions.components.FeedSubscriptionsActionBar;
-import dev.feedhub.app.web.subscriptions.components.FeedSubscriptionsList;
 import j2html.rendering.IndentedHtml;
 import j2html.tags.DomContent;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import static j2html.TagCreator.*;
 import static dev.rebelcraft.j2html.bootstrap.Bootstrap.*;
-import static dev.rebelcraft.j2html.bootstrap.Bootstrap.col;
 
 @Component
 public class AnonymousHomeView extends AbstractView {

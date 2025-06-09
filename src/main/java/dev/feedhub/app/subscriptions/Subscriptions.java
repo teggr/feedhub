@@ -4,8 +4,6 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,23 +16,27 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class FeedSubscriptions {
+public class Subscriptions {
 
   private final FeedSubscriberRepository feedSubscriberRepository;
 
-  public Page<FeedSubscriber> getSubscribers(Pageable pageable) {
+  public Page<Subscriber> getSubscribers(Pageable pageable) {
     return feedSubscriberRepository.findAll(pageable);
   }
 
-  public void createSubscriber() {
+  public void createSubscriber(String username) {
+    
+    if( !feedSubscriberRepository.existsByUsername( username ) ) {
 
-    feedSubscriberRepository.save(new FeedSubscriber(null,FeedSubscriberIdGenerator.generateSubscriberId(), null, null));
+      feedSubscriberRepository.save(new Subscriber(null,username,FeedSubscriberIdGenerator.generateSubscriberId(), null, null));
+
+    }
 
   }
 
   public void subscribeToFeed( String subscriberId, FeedId feedId) {
 
-    FeedSubscriber feedSubscriber = feedSubscriberRepository.findBySubscriberId(subscriberId);
+    Subscriber feedSubscriber = feedSubscriberRepository.findBySubscriberId(subscriberId);
 
     feedSubscriber.feedSubscriptions().add(new FeedSubscription(feedId));
 
@@ -44,7 +46,7 @@ public class FeedSubscriptions {
 
   public Page<FeedSubscription> getFeedSubscriptions(String subscriberId, Pageable pageable) {
     
-    FeedSubscriber feedSubscriber = feedSubscriberRepository.findBySubscriberId(subscriberId);
+    Subscriber feedSubscriber = feedSubscriberRepository.findBySubscriberId(subscriberId);
 
     return paginateCollection( feedSubscriber.feedSubscriptions(), pageable );
 
