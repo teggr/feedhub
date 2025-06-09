@@ -1,6 +1,7 @@
 package dev.feedhub.app.web.admin.feeds.components;
 
 import org.springframework.data.domain.Page;
+import org.springframework.security.web.csrf.CsrfToken;
 
 import dev.feedhub.app.feeds.Feed;
 import dev.feedhub.app.feeds.FeedConfiguration;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class FeedsAdminList {
 
-  public static DomContent feeds(Page<FeedConfiguration> feedConfigurations, List<ScheduledJob> scheduledFetchFeedJobs,
+  public static DomContent feeds(CsrfToken csrfToken, Page<FeedConfiguration> feedConfigurations, List<ScheduledJob> scheduledFetchFeedJobs,
       List<Feed> feeds, FeedUrlBuilder feedUrlBuilder, FetchFeedUrlBuilder fetchFeedUrlBuilder) {
 
     Map<FeedId, ScheduledJob> scheduledFetchFeedJobsByFeedId = scheduledFetchFeedJobs.stream()
@@ -67,6 +68,7 @@ public class FeedsAdminList {
 
                     each(feedConfigurations.getContent(),
                         feedConfiguration -> feedRow(
+                          csrfToken,
                           feedConfiguration, 
                           feedsByFeedId.get(feedConfiguration.feedId()), 
                           scheduledFetchFeedJobsByFeedId.get(feedConfiguration.feedId()),
@@ -81,7 +83,7 @@ public class FeedsAdminList {
     );
   }
 
-  private static TrTag feedRow(FeedConfiguration feedConfiguration, Feed feed, ScheduledJob scheduledFetchFeedJob, FeedUrlBuilder feedUrlBuilder, FetchFeedUrlBuilder fetchFeedUrlBuilder) {
+  private static TrTag feedRow(CsrfToken csrfToken, FeedConfiguration feedConfiguration, Feed feed, ScheduledJob scheduledFetchFeedJob, FeedUrlBuilder feedUrlBuilder, FetchFeedUrlBuilder fetchFeedUrlBuilder) {
     return tr().with(
 
         td().with(text(feedConfiguration.url().toString())), 
@@ -104,6 +106,7 @@ public class FeedsAdminList {
           form().withMethod("post")
           .withAction(fetchFeedUrlBuilder.build(feedConfiguration.feedId()))
           .with(
+            input().withType("hidden").withName(csrfToken.getParameterName()).withValue(csrfToken.getToken()),
             button().withType("submit").withText("Fetch")
               .withClasses(btn, btn_sm, btn_outline_info, d_inline)
           )   

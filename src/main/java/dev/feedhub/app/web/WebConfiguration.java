@@ -1,10 +1,8 @@
 package dev.feedhub.app.web;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.web.config.SpringDataWebConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -28,12 +26,20 @@ public class WebConfiguration {
 
     http.authorizeHttpRequests((authorize) -> {
 
+      authorize.requestMatchers("/").permitAll();
+
+      authorize.requestMatchers("/admin/**").hasAnyRole("ADMIN");
+
       authorize.anyRequest().authenticated();
 
     });
 
     http.formLogin(withDefaults());
     http.httpBasic(withDefaults());
+
+    http.logout((logout) -> {
+      logout.logoutSuccessUrl("/?loggedOut=true");
+    });
 
     return http.build();
 

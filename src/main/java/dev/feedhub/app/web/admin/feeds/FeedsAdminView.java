@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -53,6 +54,8 @@ public class FeedsAdminView extends AbstractView {
     FeedUrlBuilder feedUrlBuilder = (FeedUrlBuilder) model.get("feedUrlBuilder");
     FetchFeedUrlBuilder fetchFeedUrlBuilder = (FetchFeedUrlBuilder) model.get("fetchFeedUrlBuilder");
 
+    CsrfToken csrfToken = (CsrfToken) model.get("_csrf");
+
     // build the ui
     DomContent html = FeedHubSiteLayout.add("FeedHub | Admin Feeds", model,
 
@@ -62,14 +65,14 @@ public class FeedsAdminView extends AbstractView {
 
           div().withClasses(container_fluid).with(
 
-              FeedsAdminActionBar.feedsActionBar(refreshUrl, addFeedUrl, runFetchFeedJobUrl, feedsUrl),
+              FeedsAdminActionBar.feedsActionBar(csrfToken, refreshUrl, addFeedUrl, runFetchFeedJobUrl, feedsUrl),
 
               hr(),
 
               div().withClasses(row).with(
 
                 div().withClasses(col).with(
-                  FeedsAdminList.feeds(feedConfigurations, scheduledFetchFeedJobs, feeds, feedUrlBuilder, fetchFeedUrlBuilder)
+                  FeedsAdminList.feeds(csrfToken, feedConfigurations, scheduledFetchFeedJobs, feeds, feedUrlBuilder, fetchFeedUrlBuilder)
                 )
 
               )

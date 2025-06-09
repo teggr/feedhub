@@ -1,6 +1,7 @@
 package dev.feedhub.app.web.feeds.components;
 
 import org.springframework.data.domain.Page;
+import org.springframework.security.web.csrf.CsrfToken;
 
 import dev.feedhub.app.feeds.Feed;
 import dev.feedhub.app.web.feeds.FeedUrlBuilder;
@@ -16,7 +17,7 @@ import static dev.rebelcraft.j2html.bootstrap.Bootstrap.table;
 
 public class FeedsList {
 
-  public static DomContent feeds(Page<Feed> feeds, FeedUrlBuilder feedUrlBuilder, SubscribeToFeedUrlBuilder subscribeToFeedUrlBuilder) {
+  public static DomContent feeds(CsrfToken csrfToken, Page<Feed> feeds, FeedUrlBuilder feedUrlBuilder, SubscribeToFeedUrlBuilder subscribeToFeedUrlBuilder) {
 
     return div().withId("feeds").withClasses("mx-2").with(
 
@@ -44,7 +45,7 @@ public class FeedsList {
 
                     each(feeds.getContent(),
                         feed -> feedRow(
-                          feed, feedUrlBuilder, subscribeToFeedUrlBuilder))
+                          csrfToken, feed, feedUrlBuilder, subscribeToFeedUrlBuilder))
 
                 )
 
@@ -55,13 +56,14 @@ public class FeedsList {
     );
   }
 
-  private static TrTag feedRow(Feed feed, FeedUrlBuilder feedUrlBuilder, SubscribeToFeedUrlBuilder subscribeToFeedUrlBuilder) {
+  private static TrTag feedRow(CsrfToken csrfToken, Feed feed, FeedUrlBuilder feedUrlBuilder, SubscribeToFeedUrlBuilder subscribeToFeedUrlBuilder) {
     return tr().with(
 
         td().with(text(feed.url().toString())), 
         td().with(a().withHref( feedUrlBuilder.build(feed.feedId()) ).withText(feed != null ? feed.title() : "")),
         td().with(
           form().withMethod("post").withAction(subscribeToFeedUrlBuilder.build(feed.feedId())).with(
+            input().withType("hidden").withName(csrfToken.getParameterName()).withValue(csrfToken.getToken()),
             button().withType("submit").withText("Subscribe").withClasses(btn, btn_primary)
           )
         )

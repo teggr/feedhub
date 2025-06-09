@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -43,6 +44,8 @@ public class FeedSubscriptionsAdminView extends AbstractView {
     String refreshUrl = (String) model.get("refreshUrl");
     String addSubscriberUrl = (String) model.get("addSubscriberUrl");
 
+    CsrfToken csrfToken = (CsrfToken) model.get("_csrf");
+
     // build the ui
     DomContent html = FeedHubSiteLayout.add("FeedHub | Admin Subscriptions", model,
 
@@ -52,7 +55,7 @@ public class FeedSubscriptionsAdminView extends AbstractView {
 
           div().withClasses(container_fluid).with(
 
-              FeedSubscriptionsAdminActionBar.feeSubscriptionsActionBar(refreshUrl, addSubscriberUrl),
+              FeedSubscriptionsAdminActionBar.feeSubscriptionsActionBar(csrfToken, refreshUrl, addSubscriberUrl),
 
               hr(),
 

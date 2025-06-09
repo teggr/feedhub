@@ -1,7 +1,7 @@
 package dev.feedhub.app.web.home;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -20,7 +20,7 @@ public class HomeController {
   @GetMapping
   public String getHome(@AuthenticationPrincipal User user) {
     log.info("{}", user);
-      return "redirect:/admin/feeds";
+    return "anonymousHomeView";
   }
   
 }

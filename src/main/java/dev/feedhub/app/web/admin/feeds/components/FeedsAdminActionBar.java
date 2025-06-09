@@ -7,9 +7,11 @@ import static dev.rebelcraft.j2html.bootstrap.Bootstrap.col;
 import static j2html.TagCreator.*;
 import static j2html.TagCreator.h2;
 
+import org.springframework.security.web.csrf.CsrfToken;
+
 public class FeedsAdminActionBar {
 
-  public static HeaderTag feedsActionBar(String refreshUrl, String addFeedUrl, String runFetchFeedJobUrl, String feedsUrl) {
+  public static HeaderTag feedsActionBar( CsrfToken csrfToken, String refreshUrl, String addFeedUrl, String runFetchFeedJobUrl, String feedsUrl) {
 
     return header().withClasses(row).with(
 
@@ -22,11 +24,15 @@ public class FeedsAdminActionBar {
 
             form().withMethod("post").withAction(addFeedUrl).withClasses(d_inline_flex, mb_0).with(
 
+                input().withType("hidden").withName(csrfToken.getParameterName()).withValue(csrfToken.getToken()),
+
                 div().withClasses(form_control, me_2).with(input().withType("url").withName("url")),
 
                 button().withType("submit").withClasses(btn, btn_primary).withText("Add")),
             
             form().withMethod("post").withAction(runFetchFeedJobUrl).withClasses(d_inline_flex, mb_0).with(
+
+                input().withType("hidden").withName(csrfToken.getParameterName()).withValue(csrfToken.getToken()),
 
                 button().withType("submit").withClasses(btn, btn_primary).withText("Run Update Job")),
             

@@ -7,9 +7,11 @@ import static dev.rebelcraft.j2html.bootstrap.Bootstrap.col;
 import static j2html.TagCreator.*;
 import static j2html.TagCreator.h2;
 
+import org.springframework.security.web.csrf.CsrfToken;
+
 public class FeedSubscriptionsAdminActionBar {
 
-  public static HeaderTag feeSubscriptionsActionBar(String refreshUrl, String addSubscriberUrl) {
+  public static HeaderTag feeSubscriptionsActionBar(CsrfToken csrfToken, String refreshUrl, String addSubscriberUrl) {
 
     return header().withClasses(row).with(
 
@@ -21,6 +23,8 @@ public class FeedSubscriptionsAdminActionBar {
                 .withHref(refreshUrl),
             
             form().withMethod("post").withAction(addSubscriberUrl).withClasses(d_inline_flex, mb_0).with(
+
+                input().withType("hidden").withName(csrfToken.getParameterName()).withValue(csrfToken.getToken()),
 
                 button().withType("submit").withClasses(btn, btn_primary).withText("Create Subscriber"))
 
