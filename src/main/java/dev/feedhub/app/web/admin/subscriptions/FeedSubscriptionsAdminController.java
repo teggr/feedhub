@@ -22,12 +22,12 @@ public class FeedSubscriptionsAdminController {
     private final Subscriptions subscriptions;
 
     @GetMapping
-    public String getSubscribers(Pageable pageable, Model model) {
+    public Object getSubscribers(Pageable pageable, Model model) {
 
-        String refreshUrl = fromMethodName(FeedSubscriptionsAdminController.class, "getSubscribers", pageable, model).build().toUriString();
+        String refreshUrl = fromMethodCall(on(FeedSubscriptionsAdminController.class).getSubscribers(pageable, model)).build().toUriString();
         model.addAttribute("refreshUrl", refreshUrl);
 
-        String addSubscriberUrl = fromMethodName(FeedSubscriptionsAdminController.class, "postAddSubscriber").build().toUriString();
+        String addSubscriberUrl = fromMethodCall(on(FeedSubscriptionsAdminController.class).postAddSubscriber()).build().toUriString();
         model.addAttribute("addSubscriberUrl", addSubscriberUrl);
         
         model.addAttribute("feedSubscribers", subscriptions.getSubscribers(pageable));
@@ -37,7 +37,7 @@ public class FeedSubscriptionsAdminController {
     }
 
     @PostMapping("/add-subscriber")
-    public String postAddSubscriber(  ) {
+    public Object postAddSubscriber(  ) {
         
         // TODO: specify the user
         subscriptions.createSubscriber( "user" );

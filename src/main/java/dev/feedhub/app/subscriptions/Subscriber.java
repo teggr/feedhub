@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("SUBSCRIBERS")
-public record Subscriber ( @Id Long id, String username, String subscriberId, Set<FeedSubscription> feedSubscriptions, @CreatedDate Instant createdDate ) {
+public record Subscriber ( @Id Long id, String username, String subscriberId, Set<Subscription> subscriptions, @CreatedDate Instant createdDate ) {
 
 
 }

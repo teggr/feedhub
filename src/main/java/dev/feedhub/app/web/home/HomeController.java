@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
   @GetMapping
-  public String getHome(@AuthenticationPrincipal User user, Model model) {
+  public Object getHome(@AuthenticationPrincipal User user, Model model) {
     log.info("{}", user);
     return "anonymousHomeView";
   }

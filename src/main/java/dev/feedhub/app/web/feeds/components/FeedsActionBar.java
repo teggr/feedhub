@@ -8,9 +8,11 @@ import static dev.rebelcraft.j2html.bootstrap.Bootstrap.col;
 import static j2html.TagCreator.*;
 import static j2html.TagCreator.h2;
 
+import org.springframework.security.core.userdetails.User;
+
 public class FeedsActionBar {
 
-  public static HeaderTag feedsActionBar(String refreshUrl, String feedsAdminUrl) {
+  public static HeaderTag feedsActionBar(User user, String refreshUrl, String feedsAdminUrl) {
 
     return header().withClasses(row).with(
 
@@ -21,8 +23,7 @@ public class FeedsActionBar {
             a().withClasses(btn, btn_secondary).with(span().withClasses("bi", "bi-arrow-clockwise"))
                 .withHref(refreshUrl),
 
-            a().withClasses(btn, btn_secondary).withText("Manage Feeds")
-                .withHref(feedsAdminUrl)
+            iff(user != null,  a().withClasses(btn, btn_secondary).withText("Manage Feeds").withHref(feedsAdminUrl) )
 
         ));
 

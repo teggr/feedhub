@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import dev.feedhub.app.feeds.FeedId;
@@ -18,17 +19,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Subscriptions {
 
-  private final FeedSubscriberRepository feedSubscriberRepository;
+  private final SubscriberRepository subscriberRepository;
 
   public Page<Subscriber> getSubscribers(Pageable pageable) {
-    return feedSubscriberRepository.findAll(pageable);
+    return subscriberRepository.findAll(pageable);
   }
 
   public void createSubscriber(String username) {
     
-    if( !feedSubscriberRepository.existsByUsername( username ) ) {
+    if( !subscriberRepository.existsByUsername( username ) ) {
 
-      feedSubscriberRepository.save(new Subscriber(null,username,FeedSubscriberIdGenerator.generateSubscriberId(), null, null));
+      subscriberRepository.save(new Subscriber(null,username,SubscriberIdGenerator.generateSubscriberId(), null, null));
 
     }
 
@@ -36,19 +37,19 @@ public class Subscriptions {
 
   public void subscribeToFeed( String subscriberId, FeedId feedId) {
 
-    Subscriber feedSubscriber = feedSubscriberRepository.findBySubscriberId(subscriberId);
+    Subscriber subscriber = subscriberRepository.findBySubscriberId(subscriberId);
 
-    feedSubscriber.feedSubscriptions().add(new FeedSubscription(feedId));
+    subscriber.subscriptions().add(new Subscription(feedId));
 
-    feedSubscriberRepository.save(feedSubscriber);
+    subscriberRepository.save(subscriber);
 
   }
 
-  public Page<FeedSubscription> getFeedSubscriptions(String subscriberId, Pageable pageable) {
+  public Page<Subscription> getSubscriptions(String subscriberId, Pageable pageable) {
     
-    Subscriber feedSubscriber = feedSubscriberRepository.findBySubscriberId(subscriberId);
+    Subscriber subscriber = subscriberRepository.findBySubscriberId(subscriberId);
 
-    return paginateCollection( feedSubscriber.feedSubscriptions(), pageable );
+    return paginateCollection( subscriber.subscriptions(), pageable );
 
   }
 
@@ -87,6 +88,10 @@ public class Subscriptions {
 
     return new PageImpl<>(listOfValues.subList(first, last), pageable, listOfValues.size());
     
+  }
+
+  public Subscriber getSubscriberForUser(User user) {
+    return subscriberRepository.findByUsername(user.getUsername());
   }
 
 }

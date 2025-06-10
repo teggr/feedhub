@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import dev.feedhub.app.subscriptions.Subscriber;
-import dev.feedhub.app.subscriptions.FeedSubscriberRepository;
+import dev.feedhub.app.subscriptions.SubscriberRepository;
 import dev.feedhub.app.subscriptions.Subscriptions;
 import lombok.RequiredArgsConstructor;
 
@@ -20,16 +20,17 @@ import static org.springframework.web.servlet.mvc.method.annotation.MvcUriCompon
 public class FeedSubscriptionsController {
 
     private final Subscriptions subscriptions;
-    private final FeedSubscriberRepository feedSubscriberRepository;
+    private final SubscriberRepository feedSubscriberRepository;
 
     @GetMapping
-    public String getSubscriptions(Pageable pageable, Model model) {
-        String refreshUrl = fromMethodName(FeedSubscriptionsController.class, "getSubscriptions", pageable, model).build().toUriString();
+    public Object getSubscriptions(Pageable pageable, Model model) {
+
+        String refreshUrl = fromMethodCall(on(FeedSubscriptionsController.class).getSubscriptions(pageable, model)).build().toUriString();
         model.addAttribute("refreshUrl", refreshUrl);       
 
         Subscriber firstSubscriber = feedSubscriberRepository.findAll().getFirst();
 
-        model.addAttribute("feedSubscriptions", subscriptions.getFeedSubscriptions(firstSubscriber.subscriberId(), pageable));
+        model.addAttribute("feedSubscriptions", subscriptions.getSubscriptions(firstSubscriber.subscriberId(), pageable));
 
         // TODO: need to add view
 

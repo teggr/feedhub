@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.util.Base64;
 import java.util.UUID;
 
-public class FeedSubscriberIdGenerator {
+public class SubscriberIdGenerator {
 
     public static String generateSubscriberId() {
 

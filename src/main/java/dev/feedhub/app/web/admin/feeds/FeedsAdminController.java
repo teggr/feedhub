@@ -32,31 +32,28 @@ public class FeedsAdminController {
   private final Feeds feeds;
 
   @GetMapping
-  public String getFeeds(Pageable pageable, Model model) {
+  public Object getFeeds(Pageable pageable, Model model) {
 
-    String refreshUrl = fromMethodName(FeedsAdminController.class, "getFeeds", pageable, model).build().toUriString();
+    String refreshUrl = fromMethodCall(on(FeedsAdminController.class).getFeeds(pageable, model)).build().toUriString();
     model.addAttribute("refreshUrl", refreshUrl);
 
-    String addFeedUrl = fromMethodName(FeedsAdminController.class, "postFeed", null, null).build().toUriString();
+    String addFeedUrl = fromMethodCall(on(FeedsAdminController.class).postFeed(null, null)).build().toUriString();
     model.addAttribute("addFeedUrl", addFeedUrl);
 
-    String runFetchFeedJobUrl = fromMethodName(FetchFeedJobAdminController.class, "postRunJob").build().toUriString();
+    String runFetchFeedJobUrl = fromMethodCall(on(FetchFeedJobAdminController.class).postRunJob()).build().toUriString();
     model.addAttribute("runFetchFeedJobUrl", runFetchFeedJobUrl);
-
-    String feedsUrl = fromMethodName(FeedsController.class, "getFeeds", null, null).build().toUriString();
-    model.addAttribute("feedsUrl", feedsUrl);
 
     model.addAttribute("feedUrlBuilder", new FeedUrlBuilder() {
       @Override
       public String build(FeedId feedId) {
-        return fromMethodName(FeedsController.class, "getFeed", feedId.id(), null, null).build().toUriString();
+        return fromMethodCall(on(FeedsController.class).getFeed(feedId.id(), null, null, null)).build().toUriString();
       }
     });
 
     model.addAttribute("fetchFeedUrlBuilder", new FetchFeedUrlBuilder() {
       @Override
       public String build(FeedId feedId) {
-          return fromMethodName(FetchFeedJobAdminController.class, "postRunFeedJob", feedId.id()).build().toUriString();
+          return fromMethodCall(on(FetchFeedJobAdminController.class).postRunFeedJob(feedId.id())).build().toUriString();
       }
     });
 
@@ -68,7 +65,7 @@ public class FeedsAdminController {
   }
 
   @PostMapping
-  public String postFeed(@RequestParam(value = "url", required = false) URL url,
+  public Object postFeed(@RequestParam(value = "url", required = false) URL url,
       RedirectAttributes redirectAttributes) {
 
     FeedId feedId = feedConfigurations.createFeedConfiguration(url);

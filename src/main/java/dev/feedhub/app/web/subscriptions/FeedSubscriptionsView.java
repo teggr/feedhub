@@ -9,7 +9,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractView;
 
-import dev.feedhub.app.subscriptions.FeedSubscription;
+import dev.feedhub.app.subscriptions.Subscription;
 import dev.feedhub.app.web.site.FeedHubNavigation;
 import dev.feedhub.app.web.site.FeedHubSiteLayout;
 import dev.feedhub.app.web.subscriptions.components.FeedSubscriptionsActionBar;
@@ -38,7 +38,7 @@ public class FeedSubscriptionsView extends AbstractView {
       @NonNull HttpServletResponse response) throws Exception {
 
     // get from the model
-    Page<FeedSubscription> feedSubscriptions = (Page<FeedSubscription>) model.get("feedSubscriptions");
+    Page<Subscription> feedSubscriptions = (Page<Subscription>) model.get("feedSubscriptions");
     
     String refreshUrl = (String) model.get("refreshUrl");
 

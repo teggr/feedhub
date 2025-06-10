@@ -17,7 +17,7 @@ public class SubscribeToFeedController {
     private final Subscriptions subscriptions;
 
     @PostMapping
-    public String postSubscribeToFeed( @RequestParam("subscriberId") String subscriberId, @RequestParam("feedId") String feedIdValue ) {
+    public Object postSubscribeToFeed( @RequestParam("subscriberId") String subscriberId, @RequestParam("feedId") String feedIdValue ) {
         
         subscriptions.subscribeToFeed( subscriberId, new FeedId(feedIdValue));
 

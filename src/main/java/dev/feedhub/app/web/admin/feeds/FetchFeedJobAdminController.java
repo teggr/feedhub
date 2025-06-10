@@ -19,13 +19,13 @@ public class FetchFeedJobAdminController {
   private final FetchFeedJobScheduler fetchFeedJobScheduler;
 
   @PostMapping
-  public String postRunJob() {
+  public Object postRunJob() {
     fetchFeedJobScheduler.runNextScheduled();
     return "redirect:/admin/feeds";
   }
 
   @PostMapping("/{feedId}")
-  public String postRunFeedJob(@PathParam("feedId") String feedIdValue) {
+  public Object postRunFeedJob(@PathParam("feedId") String feedIdValue) {
     FeedId feedId = new FeedId(feedIdValue);
     fetchFeedJobScheduler.run(feedId);
     return "redirect:/admin/feeds";

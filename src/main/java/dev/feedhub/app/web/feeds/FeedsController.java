@@ -1,6 +1,8 @@
 package dev.feedhub.app.web.feeds;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,7 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import dev.feedhub.app.feeds.FeedId;
 import dev.feedhub.app.feeds.Feeds;
 import dev.feedhub.app.subscriptions.Subscriber;
-import dev.feedhub.app.subscriptions.FeedSubscriberRepository;
+import dev.feedhub.app.subscriptions.Subscriptions;
+import dev.feedhub.app.subscriptions.SubscriberRepository;
 import dev.feedhub.app.web.admin.feeds.FeedsAdminController;
 import dev.feedhub.app.web.subscriptions.SubscribeToFeedController;
 import dev.feedhub.app.web.subscriptions.SubscribeToFeedUrlBuilder;
@@ -24,31 +27,34 @@ import static org.springframework.web.servlet.mvc.method.annotation.MvcUriCompon
 public class FeedsController {
 
   private final Feeds feeds;
-  private final FeedSubscriberRepository feedSubscriberRepository;
+  private final Subscriptions subscriptions;
 
   @GetMapping
-  public String getFeeds(Pageable pageable, Model model) {
+  public Object getFeeds(@AuthenticationPrincipal User user, Pageable pageable, Model model) {
 
-    String feedsAdminUrl = fromMethodName(FeedsAdminController.class, "getFeeds", pageable, model).build().toUriString();
-    model.addAttribute("feedsAdminUrl", feedsAdminUrl);
-
-    String refreshUrl = fromMethodName(FeedsController.class, "getFeeds", pageable, model).build().toUriString();
+    String refreshUrl = fromMethodCall(on(FeedsController.class).getFeeds(user, pageable, model)).build().toUriString();
     model.addAttribute("refreshUrl", refreshUrl);
 
     model.addAttribute("feedUrlBuilder", new FeedUrlBuilder() {
       @Override
       public String build(FeedId feedId) {
-        return fromMethodName(FeedsController.class, "getFeed", feedId.id(), null, null).build().toUriString();
+        return fromMethodCall(on(FeedsController.class).getFeed(feedId.id(), user, null, null)).build().toUriString();
       }
     });
 
-    // Subscriber firstSubscriber = feedSubscriberRepository.findAll().getFirst();
-    // model.addAttribute("subscribeToFeedUrlBuilder", new SubscribeToFeedUrlBuilder() {
-    //   @Override
-    //   public String build(FeedId feedId) {
-    //     return fromMethodName(SubscribeToFeedController.class, "postSubscribeToFeed", firstSubscriber.subscriberId(), feedId.id()).build().toUriString();
-    //   }
-    // });
+    if(user != null) {
+      
+      Subscriber subscriber = subscriptions.getSubscriberForUser( user );
+      model.addAttribute("subscriber", subscriber);
+
+      model.addAttribute("subscribeToFeedUrlBuilder", new SubscribeToFeedUrlBuilder() {
+        @Override
+        public String build(FeedId feedId) {
+          return fromMethodCall(on(SubscribeToFeedController.class).postSubscribeToFeed(subscriber.subscriberId(), feedId.id())).build().toUriString();
+        }
+      });
+      
+    }
 
     model.addAttribute("feeds", feeds.getFeeds(pageable));
 
@@ -57,20 +63,23 @@ public class FeedsController {
   }
 
   @GetMapping("/{feedId}")
-  public String getFeed(@PathVariable("feedId") String feedIdValue, Pageable pageable, Model model) {
+  public Object getFeed(@PathVariable("feedId") String feedIdValue, @AuthenticationPrincipal User user, Pageable pageable, Model model) {
 
     FeedId feedId = new FeedId(feedIdValue);
 
-    String feedsUrl = fromMethodName(FeedsController.class, "getFeeds", null, null).build().toUriString();
-    model.addAttribute("feedsUrl", feedsUrl);
+    if(user != null) {
+      
+      Subscriber subscriber = subscriptions.getSubscriberForUser( user );
+      model.addAttribute("subscriber", subscriber);
 
-    Subscriber firstSubscriber = feedSubscriberRepository.findAll().getFirst();
-    model.addAttribute("subscribeToFeedUrlBuilder", new SubscribeToFeedUrlBuilder() {
-      @Override
-      public String build(FeedId feedId) {
-        return fromMethodName(SubscribeToFeedController.class, "postSubscribeToFeed", firstSubscriber.subscriberId(), feedId.id()).build().toUriString();
-      }
-    });
+      model.addAttribute("subscribeToFeedUrlBuilder", new SubscribeToFeedUrlBuilder() {
+        @Override
+        public String build(FeedId feedId) {
+          return fromMethodCall(on(SubscribeToFeedController.class).postSubscribeToFeed(subscriber.subscriberId(), feedId.id())).build().toUriString();
+        }
+      });
+
+    }
 
     model.addAttribute("feed", feeds.getFeed(feedId));
     model.addAttribute("feedItems", feeds.getFeedItems(feedId, pageable));

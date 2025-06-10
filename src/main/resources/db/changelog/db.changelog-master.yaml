@@ -280,11 +280,11 @@ databaseChangeLog:
                   type: TIMESTAMP WITH TIME ZONE
 
   - changeSet:
-      id: create-feed-subscriptions-table
+      id: create-subscriptions-table
       author: robin
       changes:
         - createTable:
-            tableName: FEED_SUBSCRIPTIONS
+            tableName: SUBSCRIPTIONS
             columns:
               - column:
                   name: SUBSCRIBERS

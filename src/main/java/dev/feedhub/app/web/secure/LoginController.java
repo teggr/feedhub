@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
 
   @GetMapping("/login")
-  public String getLogin(
+  public Object getLogin(
      @RequestParam(name = "error", required = false) String error, 
      @RequestParam(name = "logout", required = false) String logout,
       Model model ) {

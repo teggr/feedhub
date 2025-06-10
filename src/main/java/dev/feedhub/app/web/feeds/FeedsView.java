@@ -6,11 +6,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractView;
 
 import dev.feedhub.app.feeds.Feed;
+import dev.feedhub.app.subscriptions.Subscriber;
 import dev.feedhub.app.web.feeds.components.FeedsActionBar;
 import dev.feedhub.app.web.feeds.components.FeedsList;
 import dev.feedhub.app.web.site.FeedHubNavigation;
@@ -45,6 +47,9 @@ public class FeedsView extends AbstractView {
     String refreshUrl = (String) model.get("refreshUrl");
     String feedsAdminUrl = (String) model.get("feedsAdminUrl");
 
+    User user = (User) model.get("user");
+    Subscriber subscriber = (Subscriber) model.get("subscriber");
+
     SubscribeToFeedUrlBuilder subscribeToFeedUrlBuilder = (SubscribeToFeedUrlBuilder) model.get("subscribeToFeedUrlBuilder");
     FeedUrlBuilder feedUrlBuilder = (FeedUrlBuilder) model.get("feedUrlBuilder");
 
@@ -59,14 +64,14 @@ public class FeedsView extends AbstractView {
 
           div().withClasses(container_fluid).with(
 
-              FeedsActionBar.feedsActionBar(refreshUrl, feedsAdminUrl),
+              FeedsActionBar.feedsActionBar(user, refreshUrl, feedsAdminUrl),
 
               hr(),
 
               div().withClasses(row).with(
 
                 div().withClasses(col).with(
-                  FeedsList.feeds(csrfToken, feeds, feedUrlBuilder, subscribeToFeedUrlBuilder)
+                  FeedsList.feeds(csrfToken, feeds, feedUrlBuilder, subscriber, subscribeToFeedUrlBuilder)
                 )
 
               )

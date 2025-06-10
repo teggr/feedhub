@@ -19,16 +19,16 @@ public class FeedHubNavigationControllerAdvice {
   @ModelAttribute
   public void populateModel(Model model) {
 
-    String homeUrl = fromMethodName(HomeController.class, "getHome", null, null).build().toUriString();
+    String homeUrl = fromMethodCall(on(HomeController.class).getHome(null, null)).build().toUriString();
     model.addAttribute("homeUrl", homeUrl);
 
-    String feedsUrl = fromMethodName(FeedsController.class, "getFeeds", null, null).build().toUriString();
+    String feedsUrl = fromMethodCall(on(FeedsController.class).getFeeds(null, null, null)).build().toUriString();
     model.addAttribute("feedsUrl", feedsUrl);
 
-    String feedsAdminUrl =  fromMethodName(FeedsAdminController.class, "getFeeds", null, null).build().toUriString();
+    String feedsAdminUrl = fromMethodCall(on(FeedsAdminController.class).getFeeds(null, null)).build().toUriString();
     model.addAttribute("feedsAdminUrl", feedsAdminUrl);
 
-    String feedSubscriptionsAdminUrl =  fromMethodName(FeedSubscriptionsAdminController.class, "getSubscribers", null, null).build().toUriString();
+    String feedSubscriptionsAdminUrl =  fromMethodCall(on(FeedSubscriptionsAdminController.class).getSubscribers(null, null)).build().toUriString();
     model.addAttribute("feedSubscriptionsAdminUrl", feedSubscriptionsAdminUrl);
 
     String logoutUrl = "/logout";

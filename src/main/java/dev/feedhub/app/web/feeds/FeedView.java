@@ -1,16 +1,19 @@
 package dev.feedhub.app.web.feeds;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractView;
 
 import dev.feedhub.app.feeds.Feed;
 import dev.feedhub.app.feeds.FeedItem;
+import dev.feedhub.app.subscriptions.Subscriber;
 import dev.feedhub.app.web.feeds.components.FeedActionBar;
 import dev.feedhub.app.web.feeds.components.FeedItemsList;
 import dev.feedhub.app.web.site.FeedHubNavigation;
@@ -48,6 +51,9 @@ public class FeedView extends AbstractView {
     String feedsUrl = (String) model.get("feedsUrl");
     SubscribeToFeedUrlBuilder subscribeToFeedUrlBuilder = (SubscribeToFeedUrlBuilder) model.get("subscribeToFeedUrlBuilder");
 
+    User user = (User) model.get("user");
+    Subscriber subscriber = (Subscriber) model.get("subscriber");
+
     // build the ui
     DomContent html = FeedHubSiteLayout.add("FeedHub | Feed", model,
 
@@ -69,8 +75,10 @@ public class FeedView extends AbstractView {
                 div().withClasses(col_10).with(
                   div().withClasses(card_body).with(
                     h5(feed.title()).withClasses(card_title),
-                    form().withMethod("post").withAction(subscribeToFeedUrlBuilder.build(feed.feedId())).with(
-                        button().withType("submit").withText("Subscribe").withClasses(btn, btn_primary)),
+                    iff(Optional.ofNullable(subscriber), (s) -> { 
+                      return form().withMethod("post").withAction(subscribeToFeedUrlBuilder.build(feed.feedId())).with(
+                        button().withType("submit").withText("Subscribe").withClasses(btn, btn_primary)); 
+                    }),
                     p(feed.description()).withClasses(card_text),
                     p().withClasses(card_text).with(
                       small(TimeUtils.formatInstant(feed.publishedDate())).withClass(text_body_secondary)
