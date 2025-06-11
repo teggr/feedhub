@@ -292,4 +292,14 @@ databaseChangeLog:
               - column:
                   name: FEED_ID
                   type: VARCHAR(255)
-  
+
+  - changeSet:
+        id: add-image-url-to-feeds
+        author: robin
+        changes:
+         - addColumn:
+            tableName: FEEDS
+            columns:
+              - column:
+                  name: IMAGE_URL
+                  type: VARCHAR(255)

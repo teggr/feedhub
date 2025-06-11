@@ -21,6 +21,7 @@ public record Feed(
   Set<FeedLink> links,
   Instant publishedDate,
   String title,
-  String uri) {
+  String uri,
+  String imageUrl) {
 
 }

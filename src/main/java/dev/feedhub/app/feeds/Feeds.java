@@ -38,7 +38,8 @@ public class Feeds {
         updatedFeed.links(),
         updatedFeed.publishedDate(),
         updatedFeed.title(),
-        updatedFeed.uri()
+        updatedFeed.uri(),
+        updatedFeed.imageUrl()
       );
     }
 

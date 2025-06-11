@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Safelist;
 import org.springframework.stereotype.Component;
 
 import com.rometools.rome.feed.synd.SyndEntry;
@@ -57,8 +60,6 @@ public class FetchFeedJob {
         feedItems.add(createFeedItem(feedId, e));
       });
 
-      // get some backup values such as images/icons (can I get this from the website? favicon?)
-
       Feed feed = createFeed(feedId, configuration.url(), syndFeed);
 
       feeds.update(feed, feedItems);
@@ -91,24 +92,26 @@ public class FetchFeedJob {
     log.info("TITLEEX {}", e.getTitleEx());
     log.info("UPDATEDATE {}", e.getUpdatedDate());
 
-    return new FeedItem(null, feedId, 
+    return new FeedItem(
+      null, 
+      feedId, 
       createFeedItemAuthors(e),
-      e.getCategories().stream().map(c -> c.getName()).collect(Collectors.toSet()),
+      e.getCategories().stream().map(c -> c.getName()).collect(Collectors.toSet()), 
       createFeedItemContents(e),
-      e.getDescription() != null ? e.getDescription().getValue() : null,
+      e.getDescription() != null ? Jsoup.clean(e.getDescription().getValue(), Safelist.basicWithImages()) : null, 
       createFeedItemLinks(e),
-      e.getPublishedDate() != null ? e.getPublishedDate().toInstant() : null,
-      e.getTitle(),
+      e.getPublishedDate() != null ? e.getPublishedDate().toInstant() : null, 
+      e.getTitle(), 
       e.getUri(),
       e.getUpdatedDate() != null ? e.getUpdatedDate().toInstant() : null
     );
   }
 
   private Set<FeedItemAuthor> createFeedItemAuthors(SyndEntry e) {
-    
-    Set<FeedItemAuthor> authors = e.getAuthors().stream().map(a -> new FeedItemAuthor(a.getName(), a.getUri(), a.getEmail())).collect(
-                Collectors.toSet());
-    if(e.getAuthor() != null) {
+
+    Set<FeedItemAuthor> authors = e.getAuthors().stream()
+        .map(a -> new FeedItemAuthor(a.getName(), a.getUri(), a.getEmail())).collect(Collectors.toSet());
+    if (e.getAuthor() != null) {
       authors.add(new FeedItemAuthor(e.getAuthor(), null, null));
     }
     return authors;
@@ -128,8 +131,10 @@ public class FetchFeedJob {
 
   private Set<FeedItemContent> createFeedItemContents(SyndEntry e) {
 
-    Set<FeedItemContent> links = e.getContents().stream()
-        .map(c -> new FeedItemContent(c.getType(), c.getValue())).collect(Collectors.toSet());
+    Set<FeedItemContent> links = e.getContents()
+      .stream()
+      .map(c -> new FeedItemContent(c.getType(), Jsoup.clean(c.getValue(), Safelist.basicWithImages())))
+      .collect(Collectors.toSet());
     return links;
 
   }
@@ -164,22 +169,99 @@ public class FetchFeedJob {
     log.info("URI {}", syndFeed.getUri());
     log.info("WEBMASTER {}", syndFeed.getWebMaster());
 
-    return new Feed(null, feedId, feedUrl,
-        createFeedAuthors(syndFeed),
-        syndFeed.getCategories().stream().map(c -> c.getName()).collect(Collectors.toSet()), 
-        syndFeed.getDescription(),
-        syndFeed.getFeedType(), 
-        createFeedLinks(syndFeed), 
-        syndFeed.getPublishedDate() != null ? syndFeed.getPublishedDate().toInstant() : null, 
-        syndFeed.getTitle(),
-        syndFeed.getUri());
+    String imageUrl = fetchImageUrl(syndFeed);
+    log.info("IMAGE_URL {}", imageUrl);
+
+    return new Feed(
+      null, 
+      feedId, 
+      feedUrl, 
+      createFeedAuthors(syndFeed),
+      syndFeed.getCategories().stream().map(c -> c.getName()).collect(Collectors.toSet()), 
+      Jsoup.clean(syndFeed.getDescription(), Safelist.basicWithImages()),
+      syndFeed.getFeedType(), 
+      createFeedLinks(syndFeed),
+      syndFeed.getPublishedDate() != null ? syndFeed.getPublishedDate().toInstant() : null, 
+      syndFeed.getTitle(),
+      syndFeed.getUri(),
+      imageUrl
+    );
+
+  }
+
+  @FunctionalInterface
+  interface ImageUrlStrategy {
+      String tryGetImageUrl(SyndFeed syndFeed);
+  }
+
+  // In your FetchFeedJob class:
+  private String fetchImageUrl(SyndFeed syndFeed) {
+
+    String imageUrlPlaceholder = "https://placehold.co/200x200";
+
+    List<ImageUrlStrategy> strategies = List.of(
+        this::getFromFeedImage,
+        this::getFromMetaOgImage,
+        this::getFromImageSrcLink
+        // add more strategies as needed
+    );
+
+    for (ImageUrlStrategy strategy : strategies) {
+        String url = strategy.tryGetImageUrl(syndFeed);
+        if (url != null && !url.isEmpty()) {
+            return url;
+        }
+    }
+
+    return imageUrlPlaceholder;
+
+  }
+
+  // Example strategy implementations:
+  private String getFromImageSrcLink(SyndFeed syndFeed) {
+      try {
+          if (syndFeed.getLink() != null) {
+              Document document = Jsoup.connect(syndFeed.getLink()).get();
+              org.jsoup.nodes.Element imageSrcLink = document.selectFirst("head link[rel=image_src][href]");
+              if (imageSrcLink != null) {
+                  String href = imageSrcLink.attr("href");
+                  if (href != null && !href.isEmpty()) {
+                      return href;
+                  }
+              }
+          }
+      } catch (Exception ignored) {}
+      return null;
+  }
+
+  private String getFromMetaOgImage(SyndFeed syndFeed) {
+      try {
+          if (syndFeed.getLink() != null) {
+              Document document = Jsoup.connect(syndFeed.getLink()).get();
+              org.jsoup.nodes.Element ogImage = document.selectFirst("meta[property=og:image][content]");
+              if (ogImage != null) {
+                  String content = ogImage.attr("content");
+                  if (content != null && !content.isEmpty()) {
+                      return content;
+                  }
+              }
+          }
+      } catch (Exception ignored) {}
+      return null;
+  }
+
+  private String getFromFeedImage(SyndFeed syndFeed) {
+      if (syndFeed.getImage() != null && syndFeed.getImage().getUrl() != null) {
+          return syndFeed.getImage().getUrl();
+      }
+      return null;
   }
 
   private Set<FeedAuthor> createFeedAuthors(SyndFeed syndFeed) {
-    
-    Set<FeedAuthor> authors = syndFeed.getAuthors().stream().map(a -> new FeedAuthor(a.getName(), a.getUri(), a.getEmail())).collect(
-                Collectors.toSet());
-    if(syndFeed.getAuthor() != null) {
+
+    Set<FeedAuthor> authors = syndFeed.getAuthors().stream()
+        .map(a -> new FeedAuthor(a.getName(), a.getUri(), a.getEmail())).collect(Collectors.toSet());
+    if (syndFeed.getAuthor() != null) {
       authors.add(new FeedAuthor(syndFeed.getAuthor(), null, null));
     }
     return authors;
