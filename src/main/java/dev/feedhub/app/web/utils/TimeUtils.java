@@ -8,6 +8,11 @@ import java.time.format.DateTimeFormatter;
 public class TimeUtils {
 
   public static String formatInstant(Instant instant) {
+
+    if(instant == null) {
+      return "";
+    }
+
     ZoneId zone = ZoneId.systemDefault();
     LocalDate inputDate = instant.atZone(zone).toLocalDate();
     LocalDate today = LocalDate.now(zone);

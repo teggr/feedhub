@@ -56,6 +56,9 @@ public class FeedsController {
       
     }
 
+    String addFeedUrl = fromMethodCall(on(AddFeedController.class).postAddFeed(null, null)).build().toUriString();
+    model.addAttribute("addFeedUrl", addFeedUrl);
+
     model.addAttribute("feeds", feeds.getFeeds(pageable));
 
     return "feedsView";
@@ -80,6 +83,9 @@ public class FeedsController {
       });
 
     }
+
+    String addFeedUrl = fromMethodCall(on(AddFeedController.class).postAddFeed(null, null)).build().toUriString();
+    model.addAttribute("addFeedUrl", addFeedUrl);
 
     model.addAttribute("feed", feeds.getFeed(feedId));
     model.addAttribute("feedItems", feeds.getFeedItems(feedId, pageable));

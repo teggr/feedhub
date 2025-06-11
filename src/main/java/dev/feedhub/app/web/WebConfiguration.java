@@ -27,7 +27,7 @@ public class WebConfiguration {
 
       authorize.requestMatchers("/", "/error", "/feeds/**").permitAll();
 
-      authorize.requestMatchers("/admin/**").hasAnyRole("ADMIN");
+      authorize.requestMatchers("/admin/**", "/h2-console/**").hasAnyRole("ADMIN");
 
       authorize.anyRequest().authenticated();
 
@@ -37,12 +37,20 @@ public class WebConfiguration {
       form.loginPage("/login").permitAll();
     });
 
-    http.formLogin(withDefaults());
+    //http.formLogin(withDefaults());
     http.httpBasic(withDefaults());
 
     http.logout(logout -> {
       logout.logoutUrl("/logout").permitAll();
       logout.logoutSuccessUrl("/?logout=true");
+    });
+
+    http.csrf((csrf) -> {
+      csrf.ignoringRequestMatchers("/h2-console/**");
+    });
+
+    http.headers((headers) -> {
+      headers.frameOptions((frame) -> frame.sameOrigin());
     });
 
     return http.build();

@@ -169,7 +169,8 @@ public class FetchFeedJob {
         syndFeed.getCategories().stream().map(c -> c.getName()).collect(Collectors.toSet()), 
         syndFeed.getDescription(),
         syndFeed.getFeedType(), 
-        createFeedLinks(syndFeed), syndFeed.getPublishedDate().toInstant(), 
+        createFeedLinks(syndFeed), 
+        syndFeed.getPublishedDate() != null ? syndFeed.getPublishedDate().toInstant() : null, 
         syndFeed.getTitle(),
         syndFeed.getUri());
   }

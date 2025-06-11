@@ -46,6 +46,7 @@ public class FeedsView extends AbstractView {
     
     String refreshUrl = (String) model.get("refreshUrl");
     String feedsAdminUrl = (String) model.get("feedsAdminUrl");
+    String addFeedUrl = (String) model.get("addFeedUrl");
 
     User user = (User) model.get("user");
     Subscriber subscriber = (Subscriber) model.get("subscriber");
@@ -64,7 +65,7 @@ public class FeedsView extends AbstractView {
 
           div().withClasses(container_fluid).with(
 
-              FeedsActionBar.feedsActionBar(user, refreshUrl, feedsAdminUrl),
+              FeedsActionBar.feedsActionBar(user, refreshUrl, feedsAdminUrl, addFeedUrl, csrfToken),
 
               hr(),
 

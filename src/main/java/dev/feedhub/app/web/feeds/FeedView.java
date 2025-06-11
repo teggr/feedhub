@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -50,6 +51,9 @@ public class FeedView extends AbstractView {
     
     String feedsUrl = (String) model.get("feedsUrl");
     SubscribeToFeedUrlBuilder subscribeToFeedUrlBuilder = (SubscribeToFeedUrlBuilder) model.get("subscribeToFeedUrlBuilder");
+    String addFeedUrl = (String) model.get("addFeedUrl");
+
+    CsrfToken csrfToken = (CsrfToken) model.get("_csrf");
 
     User user = (User) model.get("user");
     Subscriber subscriber = (Subscriber) model.get("subscriber");
@@ -61,7 +65,7 @@ public class FeedView extends AbstractView {
 
           FeedHubNavigation.feedHubNavigation(model),
 
-          FeedActionBar.feedActionBar(feed, feedsUrl),
+          FeedActionBar.feedActionBar(user, feed, feedsUrl, addFeedUrl, csrfToken),
 
           hr(),
 
