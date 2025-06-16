@@ -62,7 +62,8 @@ public class Feeds {
           updatedFeedItem.publishedDate(),
           updatedFeedItem.title(),
           updatedFeedItem.uri(),
-          updatedFeedItem.updatedDate()
+          updatedFeedItem.updatedDate(),
+          updatedFeedItem.imageUrl()
         );
       }
 

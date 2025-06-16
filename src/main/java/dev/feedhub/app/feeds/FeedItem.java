@@ -20,6 +20,7 @@ public record FeedItem(
   Instant publishedDate,
   String title,
   String uri,
-  Instant updatedDate) {
+  Instant updatedDate,
+  String imageUrl) {
 
 }

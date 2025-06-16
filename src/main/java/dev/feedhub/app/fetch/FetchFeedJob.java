@@ -1,5 +1,6 @@
 package dev.feedhub.app.fetch;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Safelist;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
@@ -57,7 +59,7 @@ public class FetchFeedJob {
 
       List<FeedItem> feedItems = new ArrayList<>();
       entries.forEach(e -> {
-        feedItems.add(createFeedItem(feedId, e));
+        feedItems.add(createFeedItem(feedId, configuration.url(), e));
       });
 
       Feed feed = createFeed(feedId, configuration.url(), syndFeed);
@@ -72,7 +74,7 @@ public class FetchFeedJob {
 
   }
 
-  private FeedItem createFeedItem(FeedId feedId, SyndEntry e) {
+  private FeedItem createFeedItem(FeedId feedId, URL feedUrl, SyndEntry e) {
 
     log.info("AUTHOR {}", e.getAuthor());
     log.info("COMMENTS {}", e.getComments());
@@ -92,6 +94,9 @@ public class FetchFeedJob {
     log.info("TITLEEX {}", e.getTitleEx());
     log.info("UPDATEDATE {}", e.getUpdatedDate());
 
+    String imageUrl = FeedMediaUtils.fetchFeedItemImageUrl(feedUrl, e);
+    log.info("IMAGE_URL {}", imageUrl);
+
     return new FeedItem(
       null, 
       feedId, 
@@ -103,7 +108,8 @@ public class FetchFeedJob {
       e.getPublishedDate() != null ? e.getPublishedDate().toInstant() : null, 
       e.getTitle(), 
       e.getUri(),
-      e.getUpdatedDate() != null ? e.getUpdatedDate().toInstant() : null
+      e.getUpdatedDate() != null ? e.getUpdatedDate().toInstant() : null,
+      imageUrl
     );
   }
 
@@ -169,7 +175,7 @@ public class FetchFeedJob {
     log.info("URI {}", syndFeed.getUri());
     log.info("WEBMASTER {}", syndFeed.getWebMaster());
 
-    String imageUrl = fetchImageUrl(syndFeed);
+    String imageUrl = FeedMediaUtils.fetchFeedImageUrl(syndFeed);
     log.info("IMAGE_URL {}", imageUrl);
 
     return new Feed(
@@ -187,74 +193,6 @@ public class FetchFeedJob {
       imageUrl
     );
 
-  }
-
-  @FunctionalInterface
-  interface ImageUrlStrategy {
-      String tryGetImageUrl(SyndFeed syndFeed);
-  }
-
-  // In your FetchFeedJob class:
-  private String fetchImageUrl(SyndFeed syndFeed) {
-
-    String imageUrlPlaceholder = "https://placehold.co/200x200";
-
-    List<ImageUrlStrategy> strategies = List.of(
-        this::getFromFeedImage,
-        this::getFromMetaOgImage,
-        this::getFromImageSrcLink
-        // add more strategies as needed
-    );
-
-    for (ImageUrlStrategy strategy : strategies) {
-        String url = strategy.tryGetImageUrl(syndFeed);
-        if (url != null && !url.isEmpty()) {
-            return url;
-        }
-    }
-
-    return imageUrlPlaceholder;
-
-  }
-
-  // Example strategy implementations:
-  private String getFromImageSrcLink(SyndFeed syndFeed) {
-      try {
-          if (syndFeed.getLink() != null) {
-              Document document = Jsoup.connect(syndFeed.getLink()).get();
-              org.jsoup.nodes.Element imageSrcLink = document.selectFirst("head link[rel=image_src][href]");
-              if (imageSrcLink != null) {
-                  String href = imageSrcLink.attr("href");
-                  if (href != null && !href.isEmpty()) {
-                      return href;
-                  }
-              }
-          }
-      } catch (Exception ignored) {}
-      return null;
-  }
-
-  private String getFromMetaOgImage(SyndFeed syndFeed) {
-      try {
-          if (syndFeed.getLink() != null) {
-              Document document = Jsoup.connect(syndFeed.getLink()).get();
-              org.jsoup.nodes.Element ogImage = document.selectFirst("meta[property=og:image][content]");
-              if (ogImage != null) {
-                  String content = ogImage.attr("content");
-                  if (content != null && !content.isEmpty()) {
-                      return content;
-                  }
-              }
-          }
-      } catch (Exception ignored) {}
-      return null;
-  }
-
-  private String getFromFeedImage(SyndFeed syndFeed) {
-      if (syndFeed.getImage() != null && syndFeed.getImage().getUrl() != null) {
-          return syndFeed.getImage().getUrl();
-      }
-      return null;
   }
 
   private Set<FeedAuthor> createFeedAuthors(SyndFeed syndFeed) {

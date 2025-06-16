@@ -28,14 +28,14 @@ public class FeedItemsList {
               div().withClasses(card_body).with(
                 div().withClasses(d_flex).with(
                   div().withClasses(flex_shrink_0).with(
-                    img().withSrc("https://placehold.co/100x100").withClasses(img_thumbnail)
+                    img().withSrc(feedItem.imageUrl()).withClasses(img_thumbnail).withWidth("100")
                   ),
                   div().withClasses(flex_grow_1, ms_3).with(
-                        h6(feedItem.title()).withClasses(card_title),
-                        p().withClasses(card_text).with(
-                          small(TimeUtils.formatInstant(feedItem.publishedDate())).withClass(text_body_secondary)
-                        ),
-                        div().withClasses(card_text).with(rawHtml(feedItem.description()))
+                    h6(feedItem.title()).withClasses(card_title),
+                    p().withClasses(card_text).with(
+                      small(TimeUtils.formatInstant(feedItem.publishedDate())).withClass(text_body_secondary)
+                    ),
+                    div().withClasses(card_text).with(rawHtml(feedItem.description()))
                   )
                 )
               )

@@ -74,7 +74,7 @@ public class FeedView extends AbstractView {
             div().withClasses(card).with(
               div().withClasses(row).with(
                 div().withClasses(col_2).with(
-                  img().withSrc("https://placehold.co/200x200").withClasses(img_fluid, img_thumbnail).withAlt("Feed icon")
+                  img().withSrc(feed.imageUrl()).withClasses(img_fluid, img_thumbnail).withAlt("Feed icon")
                 ),
                 div().withClasses(col_10).with(
                   div().withClasses(card_body).with(
