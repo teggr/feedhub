@@ -1,13 +1,5 @@
 package dev.feedhub.app.web.admin.feeds;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import dev.feedhub.app.feeds.FeedConfigurations;
 import dev.feedhub.app.feeds.FeedId;
 import dev.feedhub.app.feeds.Feeds;
@@ -15,12 +7,19 @@ import dev.feedhub.app.fetch.FetchFeedJobScheduler;
 import dev.feedhub.app.web.feeds.FeedUrlBuilder;
 import dev.feedhub.app.web.feeds.FeedsController;
 import lombok.RequiredArgsConstructor;
-
-import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.net.URL;
 
-import org.springframework.web.bind.annotation.PostMapping;
+import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.fromMethodCall;
+import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 
 @Controller
 @RequestMapping("/admin/feeds")
@@ -53,20 +52,20 @@ public class FeedsAdminController {
     model.addAttribute("fetchFeedUrlBuilder", new FetchFeedUrlBuilder() {
       @Override
       public String build(FeedId feedId) {
-          return fromMethodCall(on(FetchFeedJobAdminController.class).postRunFeedJob(feedId.id())).build().toUriString();
+        return fromMethodCall(on(FetchFeedJobAdminController.class).postRunFeedJob(feedId.id())).build().toUriString();
       }
     });
 
     model.addAttribute("feedConfigurations", feedConfigurations.getFeedConfigurations(pageable));
     model.addAttribute("scheduledFetchFeedJobs", feedUpdateJobScheduler.getScheduledFetchFeedJobs());
-     model.addAttribute("feeds", feeds.getFeeds());
-    
+    model.addAttribute("feeds", feeds.getFeeds());
+
     return "feedsAdminView";
   }
 
   @PostMapping
   public Object postFeed(@RequestParam(value = "url", required = false) URL url,
-      RedirectAttributes redirectAttributes) {
+                         RedirectAttributes redirectAttributes) {
 
     FeedId feedId = feedConfigurations.createFeedConfiguration(url);
 

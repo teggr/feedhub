@@ -11,16 +11,16 @@ public class LoginController {
 
   @GetMapping("/login")
   public Object getLogin(
-     @RequestParam(name = "error", required = false) String error, 
-     @RequestParam(name = "logout", required = false) String logout,
-      Model model ) {
+    @RequestParam(name = "error", required = false) String error,
+    @RequestParam(name = "logout", required = false) String logout,
+    Model model) {
 
-      model.addAttribute("loginUrl", "/login");
-      model.addAttribute("error", error);
-      model.addAttribute("logout", logout);
+    model.addAttribute("loginUrl", "/login");
+    model.addAttribute("error", error);
+    model.addAttribute("logout", logout);
 
-      return "loginView";
+    return "loginView";
 
   }
-  
+
 }

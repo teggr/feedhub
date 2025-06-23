@@ -1,14 +1,12 @@
 package dev.feedhub.app.web.admin.feeds;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
 import dev.feedhub.app.feeds.FeedId;
 import dev.feedhub.app.fetch.FetchFeedJobScheduler;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
-
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
@@ -30,6 +28,6 @@ public class FetchFeedJobAdminController {
     fetchFeedJobScheduler.run(feedId);
     return "redirect:/admin/feeds";
   }
-  
+
 
 }

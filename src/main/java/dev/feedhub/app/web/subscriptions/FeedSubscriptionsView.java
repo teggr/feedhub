@@ -21,40 +21,40 @@ import static j2html.TagCreator.*;
 @Component
 public class FeedSubscriptionsView extends J2HtmlView {
 
-    @SuppressWarnings({"unchecked", "null"})
-    @Override
-    protected DomContent renderMergedOutputModelDomContent(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+  @SuppressWarnings({"unchecked", "null"})
+  @Override
+  protected DomContent renderMergedOutputModelDomContent(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        // get from the model
-        Page<Subscription> feedSubscriptions = (Page<Subscription>) model.get("feedSubscriptions");
+    // get from the model
+    Page<Subscription> feedSubscriptions = (Page<Subscription>) model.get("feedSubscriptions");
 
-        String refreshUrl = (String) model.get("refreshUrl");
+    String refreshUrl = (String) model.get("refreshUrl");
 
-        // build the ui
-        return FeedHubSiteLayout.add("FeedHub | Subscriptions", model,
+    // build the ui
+    return FeedHubSiteLayout.add("FeedHub | Subscriptions", model,
 
-                each(
+      each(
 
-                        FeedHubNavigation.feedHubNavigation(model),
+        FeedHubNavigation.feedHubNavigation(model),
 
-                        div().withClasses(container_fluid).with(
+        div().withClasses(container_fluid).with(
 
-                                FeedSubscriptionsActionBar.feedSubscriptionsActionBar(refreshUrl),
+          FeedSubscriptionsActionBar.feedSubscriptionsActionBar(refreshUrl),
 
-                                hr(),
+          hr(),
 
-                                div().withClasses(row).with(
+          div().withClasses(row).with(
 
-                                        div().withClasses(col).with(
-                                                FeedSubscriptionsList.feedSubscriptions(feedSubscriptions)
-                                        )
+            div().withClasses(col).with(
+              FeedSubscriptionsList.feedSubscriptions(feedSubscriptions)
+            )
 
-                                )
+          )
 
-                        )
+        )
 
-                ));
+      ));
 
-    }
+  }
 
 }

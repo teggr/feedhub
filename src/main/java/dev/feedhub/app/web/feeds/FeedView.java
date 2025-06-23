@@ -29,66 +29,66 @@ import static j2html.TagCreator.small;
 @Component
 public class FeedView extends J2HtmlView {
 
-    @SuppressWarnings({"unchecked", "null"})
-    @Override
-    protected DomContent renderMergedOutputModelDomContent(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+  @SuppressWarnings({"unchecked", "null"})
+  @Override
+  protected DomContent renderMergedOutputModelDomContent(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        // get from the model
-        Feed feed = (Feed) model.get("feed");
-        Page<FeedItem> feedItems = (Page<FeedItem>) model.get("feedItems");
+    // get from the model
+    Feed feed = (Feed) model.get("feed");
+    Page<FeedItem> feedItems = (Page<FeedItem>) model.get("feedItems");
 
-        String feedsUrl = (String) model.get("feedsUrl");
-        SubscribeToFeedUrlBuilder subscribeToFeedUrlBuilder = (SubscribeToFeedUrlBuilder) model.get("subscribeToFeedUrlBuilder");
-        String addFeedUrl = (String) model.get("addFeedUrl");
+    String feedsUrl = (String) model.get("feedsUrl");
+    SubscribeToFeedUrlBuilder subscribeToFeedUrlBuilder = (SubscribeToFeedUrlBuilder) model.get("subscribeToFeedUrlBuilder");
+    String addFeedUrl = (String) model.get("addFeedUrl");
 
-        CsrfToken csrfToken = (CsrfToken) model.get("_csrf");
+    CsrfToken csrfToken = (CsrfToken) model.get("_csrf");
 
-        User user = (User) model.get("user");
-        Subscriber subscriber = (Subscriber) model.get("subscriber");
+    User user = (User) model.get("user");
+    Subscriber subscriber = (Subscriber) model.get("subscriber");
 
-        // build the ui
-        return FeedHubSiteLayout.add("FeedHub | Feed", model,
+    // build the ui
+    return FeedHubSiteLayout.add("FeedHub | Feed", model,
 
-                each(
+      each(
 
-                        FeedHubNavigation.feedHubNavigation(model),
+        FeedHubNavigation.feedHubNavigation(model),
 
-                        FeedActionBar.feedActionBar(user, feed, feedsUrl, addFeedUrl, csrfToken),
+        FeedActionBar.feedActionBar(user, feed, feedsUrl, addFeedUrl, csrfToken),
 
-                        hr(),
+        hr(),
 
-                        // TODO: summary card of the feed + expand the cards for the feed items
-                        div().withClasses(container_fluid, mb_3).with(
-                                div().withClasses(card).with(
-                                        div().withClasses(row).with(
-                                                div().withClasses(col_2).with(
-                                                        img().withSrc(feed.imageUrl()).withClasses(img_fluid, img_thumbnail).withAlt("Feed icon")
-                                                ),
-                                                div().withClasses(col_10).with(
-                                                        div().withClasses(card_body).with(
-                                                                h5(feed.title()).withClasses(card_title),
-                                                                iff(Optional.ofNullable(subscriber), (s) -> {
-                                                                    return form().withMethod("post").withAction(subscribeToFeedUrlBuilder.build(feed.feedId())).with(
-                                                                            button().withType("submit").withText("Subscribe").withClasses(btn, btn_primary));
-                                                                }),
-                                                                p(feed.description()).withClasses(card_text),
-                                                                p().withClasses(card_text).with(
-                                                                        small(TimeUtils.formatInstant(feed.publishedDate())).withClass(text_body_secondary)
-                                                                )
-                                                        )
-                                                )
-                                        )
-                                )
-                        ),
+        // TODO: summary card of the feed + expand the cards for the feed items
+        div().withClasses(container_fluid, mb_3).with(
+          div().withClasses(card).with(
+            div().withClasses(row).with(
+              div().withClasses(col_2).with(
+                img().withSrc(feed.imageUrl()).withClasses(img_fluid, img_thumbnail).withAlt("Feed icon")
+              ),
+              div().withClasses(col_10).with(
+                div().withClasses(card_body).with(
+                  h5(feed.title()).withClasses(card_title),
+                  iff(Optional.ofNullable(subscriber), (s) -> {
+                    return form().withMethod("post").withAction(subscribeToFeedUrlBuilder.build(feed.feedId())).with(
+                      button().withType("submit").withText("Subscribe").withClasses(btn, btn_primary));
+                  }),
+                  p(feed.description()).withClasses(card_text),
+                  p().withClasses(card_text).with(
+                    small(TimeUtils.formatInstant(feed.publishedDate())).withClass(text_body_secondary)
+                  )
+                )
+              )
+            )
+          )
+        ),
 
-                        div().withClasses(container_fluid).with(
+        div().withClasses(container_fluid).with(
 
-                                FeedItemsList.feeds(feedItems)
+          FeedItemsList.feeds(feedItems)
 
-                        )
+        )
 
-                ));
+      ));
 
-    }
+  }
 
 }

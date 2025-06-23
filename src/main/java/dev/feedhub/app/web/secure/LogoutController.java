@@ -9,10 +9,10 @@ public class LogoutController {
 
   @GetMapping("/logout")
   public Object getLogin(
-      Model model ) {
+    Model model) {
 
-      model.addAttribute("logoutUrl", "/logout");
-      return "logoutView";
+    model.addAttribute("logoutUrl", "/logout");
+    return "logoutView";
 
   }
 

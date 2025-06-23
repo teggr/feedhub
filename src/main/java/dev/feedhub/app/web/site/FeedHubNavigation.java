@@ -1,17 +1,16 @@
 package dev.feedhub.app.web.site;
 
-import static dev.rebelcraft.j2html.bootstrap.Bootstrap.*;
-import static j2html.TagCreator.*;
-import static j2html.TagCreator.nav;
-
-import java.util.Map;
-
+import j2html.TagCreator;
+import j2html.tags.specialized.NavTag;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.csrf.CsrfToken;
 
-import j2html.TagCreator;
-import j2html.tags.specialized.NavTag;
+import java.util.Map;
+
+import static dev.rebelcraft.j2html.bootstrap.Bootstrap.*;
+import static j2html.TagCreator.*;
+import static j2html.TagCreator.nav;
 
 public class FeedHubNavigation {
 
@@ -38,83 +37,83 @@ public class FeedHubNavigation {
 
     return nav().withClasses(navbar, navbar_expand_lg, bg_primary_subtle, mb_4).with(
 
-        div().withClasses(container_fluid).with(
+      div().withClasses(container_fluid).with(
 
-            a().withClasses(navbar_brand, px_3).withHref(homeUrl)
-              .with(
-                span().withClasses("bi", "bi-rss-fill"),
-                text("FeedHub")
-              ),
+        a().withClasses(navbar_brand, px_3).withHref(homeUrl)
+          .with(
+            span().withClasses("bi", "bi-rss-fill"),
+            text("FeedHub")
+          ),
 
-            button().withClass(navbar_toggler).withType("button").attr("data-bs-toggle", "collapse")
-                .attr("data-bs-target", "#navbarToggler").attr("aria-controls", "navbarToggler")
-                .attr("aria-expanded", "false").attr("aria-label", "Toggle Navigation")
-                .with(span().withClass(navbar_toggler_icon)),
+        button().withClass(navbar_toggler).withType("button").attr("data-bs-toggle", "collapse")
+          .attr("data-bs-target", "#navbarToggler").attr("aria-controls", "navbarToggler")
+          .attr("aria-expanded", "false").attr("aria-label", "Toggle Navigation")
+          .with(span().withClass(navbar_toggler_icon)),
 
-            div().withClasses(collapse, navbar_collapse, d_lg_flex, justify_content_lg_between).withId("navbarToggler")
-                .with(
+        div().withClasses(collapse, navbar_collapse, d_lg_flex, justify_content_lg_between).withId("navbarToggler")
+          .with(
 
-                    div(),
+            div(),
 
-                    form().withClasses(d_inline_flex, mb_0).with(
+            form().withClasses(d_inline_flex, mb_0).with(
 
-                        input().withType("hidden").withName(csrfToken.getParameterName()).withValue(csrfToken.getToken()),
+              input().withType("hidden").withName(csrfToken.getParameterName()).withValue(csrfToken.getToken()),
 
-                        input().withClasses(form_control, me_2).withType("search"), button().withType("submit")
-                            .withClasses(btn, btn_outline_secondary).with(span().withClasses("bi", "bi-search"))
+              input().withClasses(form_control, me_2).withType("search"), button().withType("submit")
+                .withClasses(btn, btn_outline_secondary).with(span().withClasses("bi", "bi-search"))
 
-                    ),
+            ),
 
-                    ul().withClass(navbar_nav).with(
+            ul().withClass(navbar_nav).with(
 
-                        li().withClasses(nav_item, dropdown).with(
+              li().withClasses(nav_item, dropdown).with(
 
-                            TagCreator.iffElse(user != null,
-                            
-                              a().withClasses(nav_link, dropdown_toggle).withText( user != null ? user.getUsername() : "" ).withHref("#")
-                                  .attr("data-bs-toggle", "dropdown").attr("role", "button")
-                                  .attr("aria-expanded", "false") ,
+                TagCreator.iffElse(user != null,
 
-                              a().withClasses(nav_link, dropdown_toggle).withText("Sign In").withHref("#")
-                                  .attr("data-bs-toggle", "dropdown").attr("role", "button")
-                                  .attr("aria-expanded", "false")
+                  a().withClasses(nav_link, dropdown_toggle).withText(user != null ? user.getUsername() : "").withHref("#")
+                    .attr("data-bs-toggle", "dropdown").attr("role", "button")
+                    .attr("aria-expanded", "false"),
 
-                            ),
+                  a().withClasses(nav_link, dropdown_toggle).withText("Sign In").withHref("#")
+                    .attr("data-bs-toggle", "dropdown").attr("role", "button")
+                    .attr("aria-expanded", "false")
 
-                            ul().withClasses(dropdown_menu, dropdown_menu_end).with(
+                ),
 
-                                li().with(a().withClasses(dropdown_item).withHref(homeUrl).withText("Home")),
+                ul().withClasses(dropdown_menu, dropdown_menu_end).with(
 
-                                li().with(a().withClasses(dropdown_item).withHref(feedsUrl).withText("Feeds")),
+                  li().with(a().withClasses(dropdown_item).withHref(homeUrl).withText("Home")),
 
-                                TagCreator.iff( user != null && user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(s -> s.equals("ROLE_ADMIN")), 
-                                                  li().with(a().withClasses(dropdown_item).withHref(feedSubscriptionsAdminUrl).withText("Subscriptions")) ),
+                  li().with(a().withClasses(dropdown_item).withHref(feedsUrl).withText("Feeds")),
 
-                                TagCreator.iff( user != null && user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(s -> s.equals("ROLE_ADMIN")), 
-                                                  li().with(a().withClasses(dropdown_item).withHref(feedsAdminUrl).withText("Configuration")) ),
+                  TagCreator.iff(user != null && user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(s -> s.equals("ROLE_ADMIN")),
+                    li().with(a().withClasses(dropdown_item).withHref(feedSubscriptionsAdminUrl).withText("Subscriptions"))),
 
-                                li().withClasses(dropdown_divider),
+                  TagCreator.iff(user != null && user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(s -> s.equals("ROLE_ADMIN")),
+                    li().with(a().withClasses(dropdown_item).withHref(feedsAdminUrl).withText("Configuration"))),
 
-                                li().with(a().withClasses(dropdown_item).withHref(inboxedUrl).withText("Inboxed")),
-                                li().with(a().withClasses(dropdown_item).withHref(webSharesUrl).withText("WebShares")),
+                  li().withClasses(dropdown_divider),
 
-                                li().withClasses(dropdown_divider),
+                  li().with(a().withClasses(dropdown_item).withHref(inboxedUrl).withText("Inboxed")),
+                  li().with(a().withClasses(dropdown_item).withHref(webSharesUrl).withText("WebShares")),
 
-                                TagCreator.iffElse( user != null,
+                  li().withClasses(dropdown_divider),
 
-                                    li().with(a().withClasses(dropdown_item).withHref(logoutUrl).withText("Logout")),
+                  TagCreator.iffElse(user != null,
 
-                                    li().with(a().withClasses(dropdown_item).withHref(loginUrl).withText("SIgn In"))
+                    li().with(a().withClasses(dropdown_item).withHref(logoutUrl).withText("Logout")),
 
-                                )
+                    li().with(a().withClasses(dropdown_item).withHref(loginUrl).withText("SIgn In"))
 
-                            ))
+                  )
 
-                    )
+                ))
 
-                )
+            )
 
-        )
+          )
+
+      )
 
     );
   }

@@ -1,25 +1,23 @@
 package dev.feedhub.app.web.feeds;
 
+import dev.feedhub.app.feeds.FeedId;
+import dev.feedhub.app.feeds.Feeds;
+import dev.feedhub.app.subscriptions.Subscriber;
+import dev.feedhub.app.subscriptions.Subscriptions;
+import dev.feedhub.app.web.subscriptions.SubscribeToFeedController;
+import dev.feedhub.app.web.subscriptions.SubscribeToFeedUrlBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import dev.feedhub.app.feeds.FeedId;
-import dev.feedhub.app.feeds.Feeds;
-import dev.feedhub.app.subscriptions.Subscriber;
-import dev.feedhub.app.subscriptions.Subscriptions;
-import dev.feedhub.app.subscriptions.SubscriberRepository;
-import dev.feedhub.app.web.admin.feeds.FeedsAdminController;
-import dev.feedhub.app.web.subscriptions.SubscribeToFeedController;
-import dev.feedhub.app.web.subscriptions.SubscribeToFeedUrlBuilder;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.*;
+import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.fromMethodCall;
+import static org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder.on;
 
 @Controller
 @RequestMapping("/feeds")
@@ -42,9 +40,9 @@ public class FeedsController {
       }
     });
 
-    if(user != null) {
-      
-      Subscriber subscriber = subscriptions.getSubscriberForUser( user );
+    if (user != null) {
+
+      Subscriber subscriber = subscriptions.getSubscriberForUser(user);
       model.addAttribute("subscriber", subscriber);
 
       model.addAttribute("subscribeToFeedUrlBuilder", new SubscribeToFeedUrlBuilder() {
@@ -53,7 +51,7 @@ public class FeedsController {
           return fromMethodCall(on(SubscribeToFeedController.class).postSubscribeToFeed(subscriber.subscriberId(), feedId.id())).build().toUriString();
         }
       });
-      
+
     }
 
     String addFeedUrl = fromMethodCall(on(AddFeedController.class).postAddFeed(null, null)).build().toUriString();
@@ -70,9 +68,9 @@ public class FeedsController {
 
     FeedId feedId = new FeedId(feedIdValue);
 
-    if(user != null) {
-      
-      Subscriber subscriber = subscriptions.getSubscriberForUser( user );
+    if (user != null) {
+
+      Subscriber subscriber = subscriptions.getSubscriberForUser(user);
       model.addAttribute("subscriber", subscriber);
 
       model.addAttribute("subscribeToFeedUrlBuilder", new SubscribeToFeedUrlBuilder() {

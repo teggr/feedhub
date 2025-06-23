@@ -22,43 +22,43 @@ import static j2html.TagCreator.*;
 @Component
 public class FeedSubscriptionsAdminView extends J2HtmlView {
 
-    @SuppressWarnings({"unchecked", "null"})
-    @Override
-    protected DomContent renderMergedOutputModelDomContent(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+  @SuppressWarnings({"unchecked", "null"})
+  @Override
+  protected DomContent renderMergedOutputModelDomContent(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        // get from the model
-        Page<Subscriber> feedSubscribers = (Page<Subscriber>) model.get("feedSubscribers");
+    // get from the model
+    Page<Subscriber> feedSubscribers = (Page<Subscriber>) model.get("feedSubscribers");
 
-        String refreshUrl = (String) model.get("refreshUrl");
-        String addSubscriberUrl = (String) model.get("addSubscriberUrl");
+    String refreshUrl = (String) model.get("refreshUrl");
+    String addSubscriberUrl = (String) model.get("addSubscriberUrl");
 
-        CsrfToken csrfToken = (CsrfToken) model.get("_csrf");
+    CsrfToken csrfToken = (CsrfToken) model.get("_csrf");
 
-        // build the ui
-        return FeedHubSiteLayout.add("FeedHub | Admin Subscriptions", model,
+    // build the ui
+    return FeedHubSiteLayout.add("FeedHub | Admin Subscriptions", model,
 
-                each(
+      each(
 
-                        FeedHubNavigation.feedHubNavigation(model),
+        FeedHubNavigation.feedHubNavigation(model),
 
-                        div().withClasses(container_fluid).with(
+        div().withClasses(container_fluid).with(
 
-                                FeedSubscriptionsAdminActionBar.feeSubscriptionsActionBar(csrfToken, refreshUrl, addSubscriberUrl),
+          FeedSubscriptionsAdminActionBar.feeSubscriptionsActionBar(csrfToken, refreshUrl, addSubscriberUrl),
 
-                                hr(),
+          hr(),
 
-                                div().withClasses(row).with(
+          div().withClasses(row).with(
 
-                                        div().withClasses(col).with(
-                                                FeedSubscriptionsAdminList.feedSubscriptions(feedSubscribers)
-                                        )
+            div().withClasses(col).with(
+              FeedSubscriptionsAdminList.feedSubscriptions(feedSubscribers)
+            )
 
-                                )
+          )
 
-                        )
+        )
 
-                ));
+      ));
 
-    }
+  }
 
 }

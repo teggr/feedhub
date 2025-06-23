@@ -14,14 +14,14 @@ public class FeedSubscriptionsActionBar {
 
     return header().withClasses(row).with(
 
-        div().withClass(col_2).with(h2("Subscriptions").withClasses(px_3)),
+      div().withClass(col_2).with(h2("Subscriptions").withClasses(px_3)),
 
-        div().withClasses(col, pt_1).with(
+      div().withClasses(col, pt_1).with(
 
-            a().withClasses(btn, btn_secondary).with(span().withClasses("bi", "bi-arrow-clockwise"))
-                .withHref(refreshUrl)
+        a().withClasses(btn, btn_secondary).with(span().withClasses("bi", "bi-arrow-clockwise"))
+          .withHref(refreshUrl)
 
-        ));
+      ));
 
   }
 

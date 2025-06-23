@@ -25,50 +25,50 @@ import static j2html.TagCreator.*;
 @Component
 public class FeedsView extends J2HtmlView {
 
-    @SuppressWarnings({"unchecked", "null"})
-    @Override
-    protected DomContent renderMergedOutputModelDomContent(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
+  @SuppressWarnings({"unchecked", "null"})
+  @Override
+  protected DomContent renderMergedOutputModelDomContent(Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        // get from the model
-        Page<Feed> feeds = (Page<Feed>) model.get("feeds");
+    // get from the model
+    Page<Feed> feeds = (Page<Feed>) model.get("feeds");
 
-        String refreshUrl = (String) model.get("refreshUrl");
-        String feedsAdminUrl = (String) model.get("feedsAdminUrl");
-        String addFeedUrl = (String) model.get("addFeedUrl");
+    String refreshUrl = (String) model.get("refreshUrl");
+    String feedsAdminUrl = (String) model.get("feedsAdminUrl");
+    String addFeedUrl = (String) model.get("addFeedUrl");
 
-        User user = (User) model.get("user");
-        Subscriber subscriber = (Subscriber) model.get("subscriber");
+    User user = (User) model.get("user");
+    Subscriber subscriber = (Subscriber) model.get("subscriber");
 
-        SubscribeToFeedUrlBuilder subscribeToFeedUrlBuilder = (SubscribeToFeedUrlBuilder) model.get("subscribeToFeedUrlBuilder");
-        FeedUrlBuilder feedUrlBuilder = (FeedUrlBuilder) model.get("feedUrlBuilder");
+    SubscribeToFeedUrlBuilder subscribeToFeedUrlBuilder = (SubscribeToFeedUrlBuilder) model.get("subscribeToFeedUrlBuilder");
+    FeedUrlBuilder feedUrlBuilder = (FeedUrlBuilder) model.get("feedUrlBuilder");
 
-        CsrfToken csrfToken = (CsrfToken) model.get("_csrf");
+    CsrfToken csrfToken = (CsrfToken) model.get("_csrf");
 
-        // build the ui
-        return FeedHubSiteLayout.add("FeedHub | Feeds", model,
+    // build the ui
+    return FeedHubSiteLayout.add("FeedHub | Feeds", model,
 
-                each(
+      each(
 
-                        FeedHubNavigation.feedHubNavigation(model),
+        FeedHubNavigation.feedHubNavigation(model),
 
-                        div().withClasses(container_fluid).with(
+        div().withClasses(container_fluid).with(
 
-                                FeedsActionBar.feedsActionBar(user, refreshUrl, feedsAdminUrl, addFeedUrl, csrfToken),
+          FeedsActionBar.feedsActionBar(user, refreshUrl, feedsAdminUrl, addFeedUrl, csrfToken),
 
-                                hr(),
+          hr(),
 
-                                div().withClasses(row).with(
+          div().withClasses(row).with(
 
-                                        div().withClasses(col).with(
-                                                FeedsList.feeds(csrfToken, feeds, feedUrlBuilder, subscriber, subscribeToFeedUrlBuilder)
-                                        )
+            div().withClasses(col).with(
+              FeedsList.feeds(csrfToken, feeds, feedUrlBuilder, subscriber, subscribeToFeedUrlBuilder)
+            )
 
-                                )
+          )
 
-                        )
+        )
 
-                ));
+      ));
 
-    }
+  }
 
 }
