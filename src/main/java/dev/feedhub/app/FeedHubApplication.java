@@ -17,9 +17,4 @@ public class FeedHubApplication {
 		SpringApplication.run(FeedHubApplication.class, args);
 	}
 
-	@Bean
-	public ViewResolver beanViewResolver() {
-		return new BeanNameViewResolver();
-	}
-
 }
